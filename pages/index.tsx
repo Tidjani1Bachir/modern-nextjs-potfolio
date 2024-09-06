@@ -1,115 +1,165 @@
-import Image from "next/image";
-import localFont from "next/font/local";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+import {
+  Grid,
+  GridItem,
+  Stack,
+  Box,
+  useBreakpointValue,
+} from '@chakra-ui/react'
+import dynamic from 'next/dynamic'
+import Script from 'next/script'
+import OpenGraphHead from 'components/Misc/OpenGraphHead'
+import FadeInLayout from 'components/Layout/FadeWhenVisible'
+import Menu from 'components/Menu'
+import Sidebar from 'components/Sidebar'
+import Avatar from 'components/Avatar'
+import About from 'components/Sections/About'
+import Experience from 'components/Sections/Experience'
+import FeaturedWorks from 'components/Sections/FeaturedWorks'
+import ScrollMore from 'components/Misc/ScrollMore'
+import { Article } from 'types/article'
+// These are on bottom sections so no need to render it instantly
+const DevToArticles = dynamic(() => import('components/Sections/DevToArticles'))
+const GetInTouch = dynamic(() => import('components/Sections/GetInTouch'))
 
-export default function Home() {
+const Portfolio = ({ articles }: { articles: Article[] }): JSX.Element => {
+  const sideBarPadding = useBreakpointValue({ base: '5', md: '8', lg: '14' })
+  const mainContent = useBreakpointValue({
+    base: '5',
+    md: '14',
+    lg: '14',
+    xl: 0,
+  })
+  const paddTop = useBreakpointValue({ base: '20', sm: 20, md: 20 })
   return (
-    <div
-      className={`${geistSans.variable} ${geistMono.variable} grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]`}
-    >
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              pages/index.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+    <>
+      <Script
+        src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_ANALYTICS_ID}`}
+      />
+      <Script id="google-analytics">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', '${process.env.NEXT_PUBLIC_ANALYTICS_ID}');
+        `}
+      </Script>
+      <OpenGraphHead />
+      <Menu />
+      <Grid
+        id="mainGrid"
+        templateColumns={{
+          base: 'repeat(1, 1fr)',
+          lg: 'repeat(3, 1fr)',
+          xl: 'repeat(5, 1fr)',
+        }}
+        templateRows={{
+          sm: 'repeat(1, 0)',
+          lg: 'repeat(2, 1fr)',
+        }}
+        gap={4}
+      >
+        <GridItem
+          padding={sideBarPadding}
+          marginTop={paddTop}
+          rowSpan={2}
+          colSpan={{ base: 1, sm: 1, md: 1, lg: 1, xl: 2 }}
+          display="flex"
+          alignContent="center"
+          as="div"
+          flexDirection={'row'}
         >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+          <Sidebar />
+        </GridItem>
+        <GridItem
+          as="main"
+          padding={mainContent}
+          rowSpan={2}
+          colSpan={{ base: 1, sm: 2, md: 2, lg: 3, xl: 3 }}
+          overflow="hidden"
         >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+          <Stack w="100" spacing={24}>
+            <FadeInLayout>
+              <Box
+                id="aboutMe"
+                className="contentRow"
+                minH={{ lg: '100vh' }}
+                display="flex"
+                alignItems="center"
+                paddingTop={{ base: 0, lg: 20, xl: 0 }}
+                paddingBottom={{ base: 12, lg: 0 }}
+                flexDirection={{
+                  base: 'column-reverse',
+                  lg: 'row',
+                }}
+              >
+                <About />
+                <Avatar />
+              </Box>
+            </FadeInLayout>
+            <FadeInLayout>
+              <Box
+                id="jobs"
+                className="contentRow"
+                paddingTop={{ base: 0, lg: 20, xl: 0 }}
+                paddingBottom={{ base: 12, lg: 10 }}
+                paddingX={0}
+                flexDirection={'row'}
+              >
+                <Experience />
+              </Box>
+            </FadeInLayout>
+            <FadeInLayout>
+              <Box
+                id="works"
+                className="contentRow"
+                paddingTop={{ base: 0, lg: 20, xl: 20 }}
+                paddingBottom={{ base: 12, lg: 10 }}
+                paddingX={0}
+                flexDirection={'row'}
+              >
+                <FeaturedWorks />
+              </Box>
+            </FadeInLayout>
+            <FadeInLayout>
+              <Box
+                id="blog"
+                className="contentRow"
+                paddingTop={{ base: 0, lg: 20, xl: 20 }}
+                paddingBottom={{ base: 12, lg: 10 }}
+                paddingX={0}
+                flexDirection={'row'}
+              >
+                <DevToArticles articles={articles} />
+              </Box>
+            </FadeInLayout>
+            <FadeInLayout>
+              <Box
+                id="contact"
+                className="contentRow"
+                paddingTop={{ base: 0, lg: 20, xl: 20 }}
+                paddingX={0}
+                flexDirection={'row'}
+              >
+                <GetInTouch />
+              </Box>
+            </FadeInLayout>
+          </Stack>
+        </GridItem>
+      </Grid>
+      <ScrollMore />
+    </>
+  )
 }
+
+// export async function getStaticProps() {
+//   const res = await fetch('https://dev.to/api/articles?username=klawingco')
+//   const articles = await res.json()
+//   return {
+//     props: {
+//       articles,
+//     },
+//   }
+// }
+
+export default Portfolio
